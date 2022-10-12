@@ -29,6 +29,13 @@ result = subprocess.run([wasm_pack, "build", "--target", "web", "--out-dir", bui
 if result.returncode != 0:
 	raise Exception("Wasm build failed")
 
+# Hotfix for broken js generated for wall-height
+with open(build_dir / "gridless_pathfinding.js", "r") as broken_js_file:
+	broken_js = broken_js_file.read()
+broken_js = broken_js.replace("const ret = getObject(arg0).wall-height;", "const ret = getObject(arg0)['wall-height'];")
+with open(build_dir / "gridless_pathfinding.js", "w") as broken_js_file:
+	broken_js_file.write(broken_js)
+
 output_dir.mkdir(parents=True, exist_ok=True)
 
 def write_directory(archive, d):
