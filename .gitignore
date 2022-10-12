@@ -1,0 +1,5 @@
+/foundry*.js
+artifact/
+wasm/
+*.lock
+.vscode/

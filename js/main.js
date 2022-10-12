@@ -1,0 +1,94 @@
+import {initializeBackground, createAsyncPathfinder, cancelJob} from "./background.js";
+import {cache, GriddedCache, initializeCaches, wipeCaches} from "./cache.js";
+import {GriddedPathfinder, GridlessPathfinder} from "./pathfinder.js";
+
+import initGridlessPathfinding from "../wasm/gridless_pathfinding.js";
+
+let foundryReady = false;
+let wasmReady = false;
+
+// Options:
+// token - calculate path for specific token
+// elevation - specify the elvation to caluclate a path for. If unset, height is taken from token or 0
+// maxDistance - abort when going over that distance
+function initializePathfinder(from, to, options) {
+	const token = options.token;
+
+	let elevation = options.elevation;
+	let tokenData;
+
+	if (token) {
+		tokenData = {width: token.document.width, height: token.document.height};
+		if (!elevation) {
+			elevation = WallHeight._blockSightMovement ? token.losHeight : token.document.elevation;
+		}
+	} else {
+		tokenData = {width: 1, height: 1};
+		elevation = elevation ?? 0;
+	}
+
+	tokenData.elevation = elevation;
+
+	const levelIndex = cache.getLevelIndexForElevation(elevation);
+	if (canvas.grid.type === CONST.GRID_TYPES.GRIDLESS) {
+		const tokenSize = Math.max(tokenData.width, tokenData.height);
+		const graph = cache.getGraphFor(tokenSize, levelIndex, elevation);
+		return new GridlessPathfinder(graph, from, to, options);
+	} else {
+		const sizeIndex = GriddedCache.getSnapPointIndexForTokenData(tokenData);
+		return new GriddedPathfinder(sizeIndex, levelIndex, from, to, token, tokenData, options);
+	}
+}
+
+function calculatePath(from, to, options = {}) {
+	const pathfinder = initializePathfinder(from, to, options);
+	return createAsyncPathfinder(pathfinder);
+}
+
+function calculatePathBlocking(from, to, options = {}) {
+	if (!options.maxDistance) {
+		throw "A maximum distance (options.maxDistance) must be specified when calling `calculatePathBlocking`. To calculte long paths, please use the ";
+	}
+	const pathfinder = initializePathfinder(from, to, options);
+
+	let path = undefined;
+	while (path === undefined) {
+		path = pathfinder.step();
+	}
+
+	if (path === null) {
+		return null;
+	}
+
+	return pathfinder.postProcessResult(path);
+}
+
+Hooks.once("ready", async () => {
+	foundryReady = true;
+	initializeIfReady();
+});
+
+initGridlessPathfinding().then(() => {
+	wasmReady = true;
+	initializeIfReady();
+});
+
+function initializeIfReady() {
+	if (!foundryReady || !wasmReady) return;
+	initializeCaches();
+	initializeBackground();
+	window.routinglib = {calculatePath, calculatePathBlocking, cancelPathfinding};
+
+	Hooks.on("canvasInit", wipeCaches);
+	// TODO There's no point in re-running jobs when switching scenes. Better cancel them all in that case
+	Hooks.on("canvasReady", initializeCaches);
+	Hooks.on("createWall", wipeCaches);
+	Hooks.on("updateWall", wipeCaches);
+	Hooks.on("deleteWall", wipeCaches);
+
+	Hooks.callAll("routinglib.ready");
+}
+
+function cancelPathfinding(promise) {
+	return cancelJob(promise);
+}
