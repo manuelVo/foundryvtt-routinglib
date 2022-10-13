@@ -3,6 +3,7 @@ import {cache, GriddedCache, initializeCaches, wipeCaches} from "./cache.js";
 import {GriddedPathfinder, GridlessPathfinder} from "./pathfinder.js";
 
 import initGridlessPathfinding from "../wasm/gridless_pathfinding.js";
+import {isModuleActive} from "./util.js";
 
 let foundryReady = false;
 let wasmReady = false;
@@ -20,7 +21,10 @@ function initializePathfinder(from, to, options) {
 	if (token) {
 		tokenData = {width: token.document.width, height: token.document.height};
 		if (!elevation) {
-			elevation = WallHeight._blockSightMovement ? token.losHeight : token.document.elevation;
+			elevation =
+				isModuleActive("wall-height") && WallHeight._blockSightMovement
+					? token.losHeight
+					: token.document.elevation;
 		}
 	} else {
 		tokenData = {width: 1, height: 1};
