@@ -105,7 +105,7 @@ export class GriddedPathfinder {
 			let measured = terrainRuler.measureDistances([{ray}], {token: this.token})[0];
 			// TODO Maybe terrain ruler could just return the distance in cells in the first place
 			measured = Math.round(measured / canvas.dimensions.distance);
-			if (ray.terrainRulerFinalState.noDiagonals === 1) {
+			if (ray.terrainRulerFinalState?.noDiagonals === 1) {
 				measured += 0.5;
 			}
 			distance = Math.max(distance, measured);
