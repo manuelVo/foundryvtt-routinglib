@@ -196,12 +196,12 @@ function detectLevels() {
 
 export function stepCollidesWithWall(from, to, tokenData) {
 	const stepStart = getSnapPointForTokenDataObj(getPixelsFromGridPositionObj(from), tokenData);
+	stepStart.t = stepStart.b = tokenData.elevation;
 	const stepEnd = getSnapPointForTokenDataObj(getPixelsFromGridPositionObj(to), tokenData);
-	if (isModuleActive("levels")) {
-		stepStart.z = tokenData.elevation;
-		stepEnd.z = tokenData.elevation;
-		return CONFIG.Levels.API.testCollision(stepStart, stepEnd, "collision");
-	} else {
-		return canvas.walls.checkCollision(new Ray(stepStart, stepEnd), {mode: "any", type: "move"});
-	}
+	const source = new VisionSource({});
+	return CONFIG.Canvas.losBackend.testCollision(stepStart, stepEnd, {
+		mode: "any",
+		type: "move",
+		source,
+	});
 }
