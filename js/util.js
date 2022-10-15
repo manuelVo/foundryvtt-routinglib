@@ -75,7 +75,7 @@ export function getHexTokenSize(token) {
 
 // A copy of this function lives in the drag ruler module
 export function getAltOrientationFlagForToken(token, size) {
-	const hexSizeSupport = game.modules.get("hex-size-support").api;
+	const hexSizeSupport = game.modules.get("hex-size-support")?.api;
 	if (hexSizeSupport) {
 		return hexSizeSupport.isAltOrientation(token);
 	}
