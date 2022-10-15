@@ -1,3 +1,8 @@
+## 1.0.2
+### Bugfixes
+- routinglib now works properly with the Wall Height module
+- Fixed several bugs that caused pathfinding to not work at all on hex grids
+
 ## 1.0.1
 ### Bugfixes
 - Fixed a bug that would break routinglib if the wall height isn't enabled
