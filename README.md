@@ -54,6 +54,9 @@ The function will return a promise. If no path is found, the promise will resolv
 - **elevation** This parameter allows specifying an elevation at which the routing should be performed. If this parameter is set, the elevation of the token passed into the *token* option is being ignored.
 - **maxDistance** will limit the routing algorithm to paths that have at most the length indicated by this parameter. If a path cannot be found within the specified distance, the function's promise will resolve to *null*. Specifying this option will cause the routing algorithm to finish faster because it doesn't need to consider all the available routes.
 
+#### Options exclusive to the gridded pathfinder
+- **interpolate** *default: ture* If this option is set to `true` the pathfinder will try to emit as little waypoints as possible. If it's set to `false`, the pathfinder will emit a waypoint for every grid cell that the path passes trough.
+
 #### Cancelling a running pathfinding operation
 If for you no longer need the path you've requested, you should cancel the pathfinding operation. This improves the overall performance of your module - especially if you're scheduling many pathfinding operations in rapid succession. A running pathfinding operation can be cancelled by calling
 
