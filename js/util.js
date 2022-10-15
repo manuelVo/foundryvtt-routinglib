@@ -64,6 +64,27 @@ export function isModuleActive(moduleName) {
 	return game.modules.get(moduleName)?.active;
 }
 
+// A copy of this function lives in the drag ruler module
+export function getHexTokenSize(token) {
+	const size = token.width;
+	if (token.height !== size) {
+		return 1;
+	}
+	return size;
+}
+
+// A copy of this function lives in the drag ruler module
+export function getAltOrientationFlagForToken(token, size) {
+	const hexSizeSupport = game.modules.get("hex-size-support").api;
+	if (hexSizeSupport) {
+		return hexSizeSupport.isAltOrientation(token);
+	}
+	// In native foundry, tokens of size 2 are oriented like the "alt orientation" from hex-size-support
+	// Tokens of size 4 are oriented like alt orientation wasn't set
+	return size === 2;
+}
+
+// A copy of this function lives in the drag ruler module
 export function getTokenShapeForTokenData(tokenData, scene = canvas.scene) {
 	if (scene.grid.type === CONST.GRID_TYPES.GRIDLESS) {
 		return [{x: 0, y: 0}];
@@ -79,40 +100,37 @@ export function getTokenShapeForTokenData(tokenData, scene = canvas.scene) {
 		return shape;
 	} else {
 		// Hex grids
-		if (isModuleActive("hex-size-support") && tokenData.hexSizeSupport.altSnappingFlag) {
-			const borderSize = tokenData.hexSizeSupport.borderSize;
-			let shape = [{x: 0, y: 0}];
-			if (borderSize >= 2)
-				shape = shape.concat([
-					{x: 0, y: -1},
-					{x: -1, y: -1},
-				]);
-			if (borderSize >= 3)
-				shape = shape.concat([
-					{x: 0, y: 1},
-					{x: -1, y: 1},
-					{x: -1, y: 0},
-					{x: 1, y: 0},
-				]);
-			if (borderSize >= 4)
-				shape = shape.concat([
-					{x: -2, y: -1},
-					{x: 1, y: -1},
-					{x: -1, y: -2},
-					{x: 0, y: -2},
-					{x: 1, y: -2},
-				]);
+		const size = tokenData.size;
+		let shape = [{x: 0, y: 0}];
+		if (size >= 2)
+			shape = shape.concat([
+				{x: 0, y: -1},
+				{x: -1, y: -1},
+			]);
+		if (size >= 3)
+			shape = shape.concat([
+				{x: 0, y: 1},
+				{x: -1, y: 1},
+				{x: -1, y: 0},
+				{x: 1, y: 0},
+			]);
+		if (size >= 4)
+			shape = shape.concat([
+				{x: -2, y: -1},
+				{x: 1, y: -1},
+				{x: -1, y: -2},
+				{x: 0, y: -2},
+				{x: 1, y: -2},
+			]);
 
-			if (Boolean(tokenData.hexSizeSupport.altOrientationFlag) !== canvas.grid.grid.options.columns)
-				shape.forEach(space => (space.y *= -1));
-			if (canvas.grid.grid.options.columns)
-				shape = shape.map(space => {
-					return {x: space.y, y: space.x};
-				});
-			return shape;
-		} else {
-			return [{x: 0, y: 0}];
+		if (tokenData.altOrientation) {
+			shape.forEach(space => (space.y *= -1));
 		}
+		if (canvas.grid.grid.columnar)
+			shape = shape.map(space => {
+				return {x: space.y, y: space.x};
+			});
+		return shape;
 	}
 }
 

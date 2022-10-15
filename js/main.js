@@ -3,7 +3,7 @@ import {cache, GriddedCache, initializeCaches, wipeCaches} from "./cache.js";
 import {GriddedPathfinder, GridlessPathfinder} from "./pathfinder.js";
 
 import initGridlessPathfinding from "../wasm/gridless_pathfinding.js";
-import {isModuleActive} from "./util.js";
+import {getAltOrientationFlagForToken, getHexTokenSize, isModuleActive} from "./util.js";
 
 let foundryReady = false;
 let wasmReady = false;
@@ -32,6 +32,11 @@ function initializePathfinder(from, to, options) {
 	}
 
 	tokenData.elevation = elevation;
+
+	if (canvas.grid.isHex) {
+		tokenData.size = getHexTokenSize(token);
+		tokenData.altOrientation = getAltOrientationFlagForToken(token, tokenData.size);
+	}
 
 	const levelIndex = cache.getLevelIndexForElevation(elevation);
 	if (canvas.grid.type === CONST.GRID_TYPES.GRIDLESS) {
