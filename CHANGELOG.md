@@ -1,3 +1,7 @@
+## 1.0.3
+### Bugfixes
+- Fixed a bug that prevented pathfinding on hex to work when the hex size support module is not installed
+
 ## 1.0.2
 ### Bugfixes
 - routinglib now works properly with the Wall Height module
