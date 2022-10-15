@@ -8,10 +8,6 @@ import {getAltOrientationFlagForToken, getHexTokenSize, isModuleActive} from "./
 let foundryReady = false;
 let wasmReady = false;
 
-// Options:
-// token - calculate path for specific token
-// elevation - specify the elvation to caluclate a path for. If unset, height is taken from token or 0
-// maxDistance - abort when going over that distance
 function initializePathfinder(from, to, options) {
 	const token = options.token;
 
