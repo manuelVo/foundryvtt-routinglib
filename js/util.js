@@ -66,8 +66,8 @@ export function isModuleActive(moduleName) {
 
 // A copy of this function lives in the drag ruler module
 export function getHexTokenSize(token) {
-	const size = token.width;
-	if (token.height !== size) {
+	const size = token.document.width;
+	if (token.document.height !== size) {
 		return 1;
 	}
 	return size;
@@ -146,9 +146,9 @@ export function getAreaFromPositionAndShape(position, shape) {
 		let y = position.y + space.y;
 		if (canvas.grid.isHex) {
 			let shiftedRow;
-			if (canvas.grid.grid.options.even) shiftedRow = 1;
+			if (canvas.grid.grid.even) shiftedRow = 1;
 			else shiftedRow = 0;
-			if (canvas.grid.grid.options.columns) {
+			if (canvas.grid.grid.columnar) {
 				if (space.x % 2 !== 0 && position.x % 2 !== shiftedRow) {
 					y += 1;
 				}
