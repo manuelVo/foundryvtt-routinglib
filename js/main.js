@@ -22,17 +22,20 @@ function initializePathfinder(from, to, options) {
 					? token.losHeight
 					: token.document.elevation;
 		}
+		if (canvas.grid.isHex) {
+			tokenData.size = getHexTokenSize(token);
+			tokenData.altOrientation = getAltOrientationFlagForToken(token, tokenData.size);
+		}
 	} else {
 		tokenData = {width: 1, height: 1};
 		elevation = elevation ?? 0;
+		if (canvas.grid.isHex) {
+			tokenData.size = 1;
+			tokenData.altOrientation = false;
+		}
 	}
 
 	tokenData.elevation = elevation;
-
-	if (canvas.grid.isHex) {
-		tokenData.size = getHexTokenSize(token);
-		tokenData.altOrientation = getAltOrientationFlagForToken(token, tokenData.size);
-	}
 
 	const levelIndex = cache.getLevelIndexForElevation(elevation);
 	if (canvas.grid.type === CONST.GRID_TYPES.GRIDLESS) {
