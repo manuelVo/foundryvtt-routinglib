@@ -1,3 +1,8 @@
+## 1.0.4
+### Bugfixes
+- Fixed a bug that caused non-optimal paths to be generated for large hex tokens
+
+
 ## 1.0.3
 ### Bugfixes
 - Fixed a bug that prevented pathfinding on hex to work when the hex size support module is not installed
