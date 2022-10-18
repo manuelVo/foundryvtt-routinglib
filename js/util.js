@@ -161,3 +161,41 @@ export function getAreaFromPositionAndShape(position, shape) {
 		return {x, y};
 	});
 }
+
+export function buildOffset(startPos, endPos) {
+	const offset = {x: endPos.x - startPos.x, y: endPos.y - startPos.y};
+	if (canvas.grid.isHex) {
+		if (canvas.grid.grid.columnar) {
+			offset.adjustmentNeeded = (startPos.x - endPos.x) % 2 !== 0;
+			offset.originEven = startPos.x % 2 === 0;
+		} else {
+			offset.adjustmentNeeded = (startPos.y - endPos.y) % 2 !== 0;
+			offset.originEven = startPos.y % 2 === 0;
+		}
+	}
+	return offset;
+}
+
+export function applyOffset(origin, offset) {
+	const pos = {x: origin.x + offset.x, y: origin.y + offset.y};
+	if (canvas.grid.isHex && offset.adjustmentNeeded) {
+		if (canvas.grid.grid.columnar) {
+			if ((origin.x % 2 === 0) !== offset.originEven) {
+				if (offset.originEven === canvas.grid.grid.even) {
+					pos.y -= 1;
+				} else {
+					pos.y += 1;
+				}
+			}
+		} else {
+			if ((origin.y % 2 === 0) !== offset.originEven) {
+				if (offset.originEven === canvas.grid.grid.even) {
+					pos.x -= 1;
+				} else {
+					pos.x += 1;
+				}
+			}
+		}
+	}
+	return pos;
+}

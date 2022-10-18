@@ -1,7 +1,13 @@
 import {cache, stepCollidesWithWall} from "./cache.js";
 import {PriorityQueueSet} from "./data_structures.js";
 import {getCenterFromGridPositionObj} from "./foundry_fixes.js";
-import {getAreaFromPositionAndShape, getTokenShapeForTokenData, nodeId} from "./util.js";
+import {
+	applyOffset,
+	buildOffset,
+	getAreaFromPositionAndShape,
+	getTokenShapeForTokenData,
+	nodeId,
+} from "./util.js";
 
 import * as GridlessPathfinding from "../wasm/gridless_pathfinding.js";
 
@@ -70,7 +76,7 @@ export class GriddedPathfinder {
 			}
 			let cost;
 			if (window.terrainRuler && !this.ignoreTerrain) {
-				const offset = {x: neighbor.x - currentNode.node.x, y: neighbor.y - currentNode.node.y};
+				const offset = buildOffset(currentNode.node, neighbor);
 				cost = this.terrainCostForStep(tokenArea, offset, currentNode.cost);
 			} else {
 				// Count 5-10-5 diagonals as 1.5 (so two add up to 3) and 5-5-5 diagonals as 1.0001 (to discourage unnecessary diagonals)
@@ -91,7 +97,7 @@ export class GriddedPathfinder {
 	terrainCostForStep(tokenArea, offset, previousDistance = 0) {
 		let distance = 0;
 		for (const srcCell of tokenArea) {
-			const dstCell = {x: srcCell.x + offset.x, y: srcCell.y + offset.y};
+			const dstCell = applyOffset(srcCell, offset);
 			// TODO Cache the result of source->destination measurements to speed up the pathfinding for large tokens
 			const ray = new Ray(
 				getCenterFromGridPositionObj(srcCell),
@@ -134,9 +140,9 @@ export class GriddedPathfinder {
 							x: middleNode.x - startNode.x,
 							y: middleNode.y - startNode.y,
 						};
-						const startEndOffset = {x: endNode.x - startNode.x, y: endNode.y - startNode.y};
+						const startEndOffset = buildOffset(startNode, endNode);
 						const middleArea = getAreaFromPositionAndShape(middleNode, this.tokenShape);
-						const middleEndOffset = {x: endNode.x - middleNode.x, y: endNode.y - middleNode.y};
+						const middleEndOffset = buildOffset(middleNode, endNode);
 
 						// TODO Cache the measurement for use in the next loop to improve performance - this can possibly be done withing terrainCostForStep
 						const middleDistance = this.terrainCostForStep(startArea, startMiddleOffset);
