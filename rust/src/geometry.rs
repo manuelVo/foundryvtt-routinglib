@@ -179,9 +179,52 @@ impl LineSegment {
 		}
 		between(intersection.x, self.p1.x, self.p2.x)
 	}
+
+	pub fn bounding_rect(&self) -> Rect {
+		let (left, right) = minmax(self.p1.x, self.p2.x);
+		let (top, bottom) = minmax(self.p1.y, self.p2.y);
+		Rect {
+			left,
+			right,
+			top,
+			bottom,
+		}
+	}
 }
 
 pub fn between<T: Copy + PartialOrd>(num: T, a: T, b: T) -> bool {
 	let (min, max) = if a < b { (a, b) } else { (b, a) };
 	num >= min && num <= max
+}
+
+pub fn minmax<T: PartialOrd>(a: T, b: T) -> (T, T) {
+	if a <= b {
+		(a, b)
+	} else {
+		(b, a)
+	}
+}
+
+pub fn minmax_by_key<T, F: Fn(&T) -> K, K: PartialOrd>(a: T, b: T, f: F) -> (T, T) {
+	if f(&a) < f(&b) {
+		(a, b)
+	} else {
+		(b, a)
+	}
+}
+
+#[derive(Debug, Clone, Copy)]
+pub struct Rect {
+	pub left: f64,
+	pub right: f64,
+	pub top: f64,
+	pub bottom: f64,
+}
+
+impl Rect {
+	pub fn intersects(&self, other: &Rect) -> bool {
+		let (left_rect, right_rect) = minmax_by_key(self, other, |rect| rect.left);
+		let (top_rect, bottom_rect) = minmax_by_key(self, other, |rect| rect.top);
+		left_rect.right >= right_rect.left && top_rect.bottom >= bottom_rect.top
+	}
 }

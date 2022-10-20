@@ -150,11 +150,20 @@ impl Pathfinder {
 	}
 
 	fn points_connected(p1: Point, p2: Point, walls: &[LineSegment]) -> bool {
-		!Self::collides_with_wall(&LineSegment::new(p1, p2), walls)
+		!Self::collides_with_any_wall(&LineSegment::new(p1, p2), walls)
 	}
 
-	fn collides_with_wall(line: &LineSegment, walls: &[LineSegment]) -> bool {
+	fn collides_with_any_wall(line: &LineSegment, walls: &[LineSegment]) -> bool {
 		// TODO Directional walls
-		walls.iter().any(|wall| line.intersection(wall).is_some())
+		walls
+			.iter()
+			.any(|wall| Self::collides_with_wall(line, wall))
+	}
+
+	fn collides_with_wall(line: &LineSegment, wall: &LineSegment) -> bool {
+		if !line.bounding_rect().intersects(&wall.bounding_rect()) {
+			return false;
+		}
+		line.intersection(wall).is_some()
 	}
 }
