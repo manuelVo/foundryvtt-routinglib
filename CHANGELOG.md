@@ -1,3 +1,8 @@
+## 1.0.5
+### Performance
+- The gridless pathfinder is now twice as fast on scenes with many walls
+
+
 ## 1.0.4
 ### Bugfixes
 - Fixed a bug that caused non-optimal paths to be generated for large hex tokens
