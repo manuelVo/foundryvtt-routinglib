@@ -1,3 +1,8 @@
+## 1.0.6
+### Algorithm changes
+- On griddles scenes, when starting a path on a grid cell which has a wall through its dead-center, the pathfinder will now return that no path exists. This prevents it from suggesting a path that would require to move through that wall.
+
+
 ## 1.0.5
 ### Performance
 - The gridless pathfinder is now twice as fast on scenes with many walls
