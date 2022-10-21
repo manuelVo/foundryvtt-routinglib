@@ -98,7 +98,7 @@ export class GriddedCache extends Cache {
 				) {
 					continue;
 				}
-				if (!stepCollidesWithWall(pos, neighborPos, tokenData)) {
+				if (!stepCollidesWithWall(pos, neighborPos, tokenData, true)) {
 					const isDiagonal =
 						pos.x !== neighborPos.x &&
 						pos.y !== neighborPos.y &&
@@ -194,12 +194,24 @@ function detectLevels() {
 	return levels;
 }
 
-export function stepCollidesWithWall(from, to, tokenData) {
+export function stepCollidesWithWall(from, to, tokenData, adjustPos = false) {
 	const stepStart = getSnapPointForTokenDataObj(getPixelsFromGridPositionObj(from), tokenData);
-	stepStart.t = stepStart.b = tokenData.elevation;
 	const stepEnd = getSnapPointForTokenDataObj(getPixelsFromGridPositionObj(to), tokenData);
+	let adjustedStart;
+	if (adjustPos) {
+		// Using an adjusted position 1 pixel away from the center of the grid prevents the path from leaving
+		// that square if a wall is dead-center. This prevents bugs where a token is allowed to move through walls
+		// if it starts pathfinding on such a square.
+		adjustedStart = {
+			x: stepStart.x + Math.sign(stepStart.x - stepEnd.x),
+			y: stepStart.y + Math.sign(stepStart.y - stepEnd.y),
+		};
+	} else {
+		adjustedStart = stepStart;
+	}
+	adjustedStart.t = adjustedStart.b = tokenData.elevation;
 	const source = new VisionSource({});
-	return CONFIG.Canvas.losBackend.testCollision(stepStart, stepEnd, {
+	return CONFIG.Canvas.losBackend.testCollision(adjustedStart, stepEnd, {
 		mode: "any",
 		type: "move",
 		source,
