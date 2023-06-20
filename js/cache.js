@@ -57,8 +57,16 @@ class Cache {
 export class GriddedCache extends Cache {
 	reset() {
 		super.reset();
-		this.gridWidth = Math.ceil(canvas.dimensions.width / canvas.grid.w);
-		this.gridHeight = Math.ceil(canvas.dimensions.height / canvas.grid.h);
+		if (canvas.grid.isHex && canvas.grid.grid.columnar) {
+			this.gridWidth = Math.ceil(canvas.dimensions.width / ((3 / 4) * canvas.grid.w));
+		} else {
+			this.gridWidth = Math.ceil(canvas.dimensions.width / canvas.grid.w);
+		}
+		if (canvas.grid.isHex && !canvas.grid.grid.columnar) {
+			this.gridHeight = Math.ceil(canvas.dimensions.height / ((3 / 4) * canvas.grid.h));
+		} else {
+			this.gridHeight = Math.ceil(canvas.dimensions.height / canvas.grid.h);
+		}
 	}
 
 	static getSnapPointIndexForTokenData(tokenData) {
