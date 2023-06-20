@@ -2,7 +2,7 @@
 	"id": "routinglib",
 	"title": "routinglib",
 	"description": "A library module to calculate a path between two points",
-	"version": "1.0.7",
+	"version": "1.0.8",
 	"compatibility": {
 		"minimum": "10",
 		"verified": "11"
@@ -16,7 +16,7 @@
 	],
 	"esmodules": ["js/main.js"],
 	"url": "https://github.com/manuelVo/foundryvtt-routinglib",
-	"download": "https://github.com/manuelVo/foundryvtt-routinglib/releases/download/v1.0.7/routinglib-1.0.7.zip",
+	"download": "https://github.com/manuelVo/foundryvtt-routinglib/releases/download/v1.0.8/routinglib-1.0.8.zip",
 	"manifest": "https://raw.githubusercontent.com/manuelVo/foundryvtt-routinglib/master/module.json",
 	"readme": "https://github.com/manuelVo/foundryvtt-routinglib/blob/master/README.md",
 	"changelog": "https://github.com/manuelVo/foundryvtt-routinglib/blob/master/CHANGELOG.md",

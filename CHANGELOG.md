@@ -1,3 +1,8 @@
+## 1.0.8
+### Bugfixes
+- Fixed a bug that caused pathfinding to crash when reaching the lower right edge of the map (thanks seanpg71!)
+
+
 ## 1.0.7
 ### Compatibility
 - Verified the compatibility with Foundry v11
