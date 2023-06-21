@@ -219,7 +219,7 @@ export function stepCollidesWithWall(from, to, tokenData, adjustPos = false) {
 	}
 	adjustedStart.t = adjustedStart.b = tokenData.elevation;
 	const source = new VisionSource({});
-	return CONFIG.Canvas.losBackend.testCollision(adjustedStart, stepEnd, {
+	return CONFIG.Canvas.polygonBackends.move.testCollision(adjustedStart, stepEnd, {
 		mode: "any",
 		type: "move",
 		source,
