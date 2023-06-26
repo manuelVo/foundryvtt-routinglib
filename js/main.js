@@ -71,6 +71,20 @@ function calculatePathBlocking(from, to, options = {}) {
 	return pathfinder.postProcessResult(path);
 }
 
+Hooks.once("init", async () => {
+	game.settings.register("routinglib", "gridlessTokenSizeRatio", {
+		scope: "world",
+		config: false,
+		type: Number,
+		default: 0.9,
+		onChange: () => {
+			if (canvas.grid.type === CONST.GRID_TYPES.GRIDLESS) {
+				cache.reset();
+			}
+		},
+	});
+});
+
 Hooks.once("ready", async () => {
 	foundryReady = true;
 	initializeIfReady();

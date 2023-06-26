@@ -139,7 +139,8 @@ class GridlessCache extends Cache {
 		}
 		let graph = levelGraphs[tokenSize];
 		if (!graph) {
-			const tokenCalcSize = tokenSize * canvas.grid.size * 0.9; // TODO Put this multiplicator into a setting
+			const tokenCalcSize =
+				tokenSize * canvas.grid.size * game.settings.get("routinglib", "gridlessTokenSizeRatio");
 			const walls = canvas.walls.placeables;
 			const wallHeightEnabled = isModuleActive("wall-height");
 			graph = GridlessPathfinding.initializeGraph(
