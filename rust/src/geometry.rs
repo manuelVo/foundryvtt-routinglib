@@ -162,6 +162,11 @@ impl LineSegment {
 		}
 	}
 
+	pub fn intersects(&self, other: &LineSegment) -> bool {
+		is_clockwise(self.p1, other.p1, other.p2) != is_clockwise(self.p2, other.p1, other.p2)
+			&& is_clockwise(self.p1, self.p2, other.p1) != is_clockwise(self.p1, self.p2, other.p2)
+	}
+
 	pub fn intersection(&self, other: &LineSegment) -> Option<Point> {
 		let intersection = self.line.intersection(&other.line);
 		intersection.filter(|intersection| {
@@ -190,6 +195,10 @@ impl LineSegment {
 			bottom,
 		}
 	}
+}
+
+fn is_clockwise(a: Point, b: Point, c: Point) -> bool {
+	(c.y - a.y) * (b.x - a.x) <= (b.y - a.y) * (c.x - a.x)
 }
 
 pub fn between<T: Copy + PartialOrd>(num: T, a: T, b: T) -> bool {

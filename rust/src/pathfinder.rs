@@ -161,9 +161,6 @@ impl Pathfinder {
 	}
 
 	fn collides_with_wall(line: &LineSegment, wall: &LineSegment) -> bool {
-		if !line.bounding_rect().intersects(&wall.bounding_rect()) {
-			return false;
-		}
-		line.intersection(wall).is_some()
+		line.intersects(wall)
 	}
 }
