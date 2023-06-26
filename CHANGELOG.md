@@ -1,3 +1,14 @@
+## 1.1.0
+### Performance
+- Increased the speed of the gridless pathfinder (thanks to MavethGH for suggesting this improved algorithm!)
+
+### Compatibility
+- Removed the deprecation warnings in Foundry v11. This breaks v10 compatibility.
+
+### New features
+- There is now a hidden setting called `gridlessTokenSizeRatio` which gives control over how far a token must stay away from walls in gridless mode
+
+
 ## 1.0.8
 ### Bugfixes
 - Fixed a bug that caused pathfinding to crash when reaching the lower right edge of the map (thanks seanpg71!)
